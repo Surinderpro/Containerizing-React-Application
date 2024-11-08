@@ -11,14 +11,14 @@ function App() {
     }, []);
 
     const fetchUsers = async () => {
-        const res = await axios.get('http://localhost:5000/api/users');
+        const res = await axios.get('http://backend:5000/api/users');
         setUsers(res.data);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const newUser = { name, email };
-        await axios.post('http://localhost:5000/api/users', newUser);
+        await axios.post('http://backend:5000/api/users', newUser);
         setName('');
         setEmail('');
         fetchUsers();
@@ -54,4 +54,3 @@ function App() {
 }
 
 export default App;
-

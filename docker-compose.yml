@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # MongoDB service
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017" # Expose MongoDB port
+    volumes:
+      - mongo_data:/data/db # Volume for MongoDB persistence
+    networks:
+      - app-network
+  
+  # Backend service
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/sampleApp # MongoDB URI for the backend
+      - PORT=5000 # Ensure backend uses this port
+    ports:
+      - "5000:5000" # Map backend port to the host
+    depends_on:
+      - mongo # Ensure MongoDB starts first
+    networks:
+      - app-network
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000" # Map frontend port to the host
+    depends_on:
+      - backend # Ensure backend starts first
+    networks:
+      - app-network
+
+# Define a network for all the services to communicate
+networks:
+  app-network:
+    driver: bridge
+
+# Define a volume for MongoDB data persistence
+volumes:
+  mongo_data:
+    driver: local
+
